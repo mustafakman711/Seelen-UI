@@ -1,0 +1,162 @@
+id: "@mustafakman711/macos"
+metadata:
+  displayName: macOS Tahoe
+  description: macOS 26 style glass dock and transparent menu bar. Static gradients and box-shadows only, no backdrop-filter, no scroll-driven or infinite animations.
+  tags:
+    - weg
+    - toolbar
+# Notes (checked against Seelen UI v2.8.8 source):
+# - Inline `styles:` strings are raw CSS (only `!include *.scss` files go through grass/SCSS),
+#   so no SCSS nesting or mixins here.
+# - Each theme is wrapped in `@layer theme-<id>`, layers follow the activeThemes order, so this
+#   theme (listed after @default/theme) wins over the default theme no matter the specificity.
+#   Unlayered Svelte component styles still win over any theme (e.g. .weg-separator opacity).
+styles:
+  "@seelen/weg": |
+    :root {
+      --glass-fill: oklch(from var(--slu-std-bg-color) l c h / 0.3);
+      --glass-sheen-top: light-dark(oklch(1 0 0 / 0.38), oklch(1 0 0 / 0.14));
+      --glass-sheen-mid: light-dark(oklch(1 0 0 / 0.08), oklch(1 0 0 / 0.03));
+      --glass-rim-top: light-dark(oklch(1 0 0 / 0.75), oklch(1 0 0 / 0.32));
+      --glass-rim: light-dark(oklch(1 0 0 / 0.35), oklch(1 0 0 / 0.12));
+      --glass-rim-bottom: light-dark(oklch(1 0 0 / 0.18), oklch(1 0 0 / 0.06));
+      --glass-hairline: light-dark(oklch(0 0 0 / 0.12), oklch(0 0 0 / 0.4));
+      --glass-shadow: oklch(0 0 0 / 0.22);
+      --glass-radius: 24px;
+    }
+
+    /* floating glass slab */
+    .taskbar,
+    .taskbar[data-has-margin="true"],
+    .taskbar[data-size="min-content"] {
+      border-radius: var(--glass-radius);
+      background-color: var(--glass-fill);
+      /* specular highlight: bright at the top, fading out before the middle */
+      background-image: linear-gradient(
+        to bottom,
+        var(--glass-sheen-top) 0%,
+        var(--glass-sheen-mid) 45%,
+        transparent 70%
+      );
+      /* rim via inset shadows so the dock does not grow by a border (keeps it inside the reserved work area) */
+      box-shadow:
+        inset 0 1px 0 0 var(--glass-rim-top),
+        inset 0 -1px 0 0 var(--glass-rim-bottom),
+        inset 0 0 0 1px var(--glass-rim),
+        0 0 0 0.5px var(--glass-hairline),
+        0 6px 18px -4px var(--glass-shadow);
+    }
+
+    /* drop the default scroll-timeline inner shadows, they repaint while scrolling */
+    .taskbar.horizontal > .weg-items-container,
+    .taskbar.vertical > .weg-items-container {
+      animation: none;
+      border-radius: var(--glass-radius);
+    }
+
+    .horizontal .weg-separator {
+      border-left-color: oklch(from var(--slu-std-fg-color) l c h / 0.2);
+    }
+
+    .vertical .weg-separator {
+      border-top-color: oklch(from var(--slu-std-fg-color) l c h / 0.2);
+    }
+
+    /* bare icons, no tiles */
+    .weg-item,
+    .weg-item:hover {
+      background-color: transparent;
+      box-shadow: none;
+    }
+
+    .weg-item {
+      border-radius: calc(var(--glass-radius) - var(--config-padding));
+      transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .weg-item:hover .weg-item-icon,
+    .weg-item:hover .weg-item-canvas {
+      filter: none;
+    }
+
+    /* hover is taken from the static wrapper, not the moving item: hovering the item itself
+       makes it jump away from a cursor resting on its lower edge and flicker in a loop.
+       The lift stays inside --config-padding because .weg-items-container is overflow:auto (it clips). */
+    .weg-item-overlay:hover > .weg-item {
+      transform: translateY(-4px) scale(1.06);
+    }
+
+    .weg-item:active,
+    .weg-item-overlay:hover > .weg-item:active {
+      transform: translateY(-1px) scale(0.97);
+    }
+
+    /* small soft running dot */
+    .weg-item-overlay .weg-item-open-sign {
+      width: 4px;
+      height: 4px;
+      background-color: var(--slu-std-fg-color);
+      box-shadow: 0 0 3px 0 oklch(from var(--slu-std-fg-color) l c h / 0.45);
+      transition: opacity 200ms ease;
+    }
+
+    .weg-item-overlay .weg-item-open-sign.weg-item-open-sign-active {
+      opacity: 0.6;
+    }
+
+    .horizontal .weg-item-overlay .weg-item-open-sign.weg-item-open-sign-focused,
+    .vertical .weg-item-overlay .weg-item-open-sign.weg-item-open-sign-focused {
+      width: 4px;
+      height: 4px;
+      opacity: 1;
+      background-color: var(--slu-std-fg-color);
+    }
+
+    .weg-item-overlay .weg-item-open-sign.weg-item-open-sign-attention {
+      opacity: 1;
+      background-color: var(--slu-std-ui-color);
+    }
+
+  "@seelen/fancy-toolbar": |
+    /* macOS 26 menu bar: transparent, only a faint scrim for legibility */
+    .ft-bar,
+    .ft-bar[data-has-margin="true"] {
+      background-color: transparent;
+      background-image: linear-gradient(
+        to bottom,
+        oklch(from var(--slu-std-bg-color) l c h / 0.22),
+        oklch(from var(--slu-std-bg-color) l c h / 0) 100%
+      );
+      border-radius: 0;
+      font-family: "Segoe UI Variable Text", "Segoe UI", sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      text-shadow: 0 0 2px oklch(from var(--slu-std-bg-color) l c h / 0.7),
+        0 1px 3px oklch(from var(--slu-std-bg-color) l c h / 0.45);
+    }
+
+    /* readable over a maximized window */
+    .ft-bar[data-there-is-maximized-on-background="true"] {
+      background-color: oklch(from var(--slu-std-bg-color) l c h / 0.55);
+    }
+
+    /* small glass pills */
+    .ft-bar-item.ft-bar-item-clickable {
+      border-radius: 999px;
+      transition:
+        opacity 200ms ease,
+        scale 200ms ease,
+        transform 120ms ease;
+    }
+
+    .ft-bar-item.ft-bar-item-clickable:hover {
+      background-color: oklch(from var(--slu-std-fg-color) l c h / 0.1);
+      box-shadow:
+        inset 0 1px 0 0 light-dark(oklch(1 0 0 / 0.6), oklch(1 0 0 / 0.22)),
+        inset 0 0 0 0.5px light-dark(oklch(1 0 0 / 0.35), oklch(1 0 0 / 0.12));
+    }
+
+    .ft-bar-item.ft-bar-item-clickable:active {
+      background-color: oklch(from var(--slu-std-fg-color) l c h / 0.16);
+      transform: scale(0.96);
+    }

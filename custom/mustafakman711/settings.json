@@ -1,0 +1,68 @@
+{
+    "activeThemes":  [
+                         "@default/theme",
+                         "@mustafakman711/macos"
+                     ],
+    "performanceMode":  {
+                            "default":  "Disabled",
+                            "onBattery":  "Minimal",
+                            "onEnergySaver":  "Extreme"
+                        },
+    "hardwareAcceleration":  true,
+    "pollingInterval":  5,
+    "backupSyncEnabled":  false,
+    "suspendOnGameMode":  true,
+    "language":  "tr",
+    "dateFormat":  "ddd D MMM  HH:mm",
+    "byWidget":  {
+                     "@seelen/weg":  {
+                                         "enabled":  true,
+                                         "mode":  "MinContent",
+                                         "hideMode":  "Never",
+                                         "position":  "Bottom",
+                                         "size":  42,
+                                         "margin":  6,
+                                         "padding":  6,
+                                         "spaceBetweenItems":  6,
+                                         "showInstanceCounter":  false,
+                                         "showWindowTitle":  false,
+                                         "delayToShow":  0,
+                                         "delayToHide":  400
+                                     },
+                     "@seelen/fancy-toolbar":  {
+                                                   "enabled":  true,
+                                                   "itemSize":  15,
+                                                   "padding":  5,
+                                                   "margin":  0,
+                                                   "position":  "Top",
+                                                   "hideMode":  "Never"
+                                               },
+                     "@seelen/window-manager":  {
+                                                    "enabled":  false
+                                                },
+                     "@seelen/wallpaper-manager":  {
+                                                       "enabled":  false
+                                                   },
+                     "@seelen/workspaces-viewer":  {
+                                                       "enabled":  false
+                                                   },
+                     "@seelen/task-switcher":  {
+                                                   "enabled":  false
+                                               },
+                     "@seelen/flyouts":  {
+                                             "enabled":  false
+                                         },
+                     "@seelen/bluetooth-popup":  {
+                                                     "enabled":  false
+                                                 },
+                     "@seelen/keyboard-selector":  {
+                                                       "enabled":  false
+                                                   },
+                     "@seelen/weg-preview":  {
+                                                 "enabled":  false
+                                             },
+                     "@seelen/notifications":  {
+                                                   "enabled":  false
+                                               }
+                 }
+}
